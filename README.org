@@ -6,6 +6,10 @@ After switching to Xcode 11.5 we noticed that code-coverage started to produce u
 
 This repository provides a minimal example to reproduce the issue.
 
+** TL;DR
+
+So far, it looks like that the problem is caused by changes in the Swift 5.2.* Toolchain. Perhaps, the compiler changed the way how inlinable functions, extensions and other non-trivial cases are processed during the compilation pipeline but ~xccov~ was not updated accordingly.
+
 * How does it work
 
 There is a ~check_coverage.sh~ script that executes the following steps:
@@ -17,6 +21,8 @@ There is a ~check_coverage.sh~ script that executes the following steps:
 
 * Results
 
+Note: all the results below were collected with Xcode 11.5 / Swift 5.2.4 Toolchain. I see the same behaviour for Xcode 11.4.1 as well.
+
 As you can see from the table below, ~xccov~ fails to count functions (classes?) properly when a module compiled with ~wholemodule~ optimisation. With the ~wholemodule~ option, only one file is tracked as covered with unit-tests.
 
 |-------------------------------+----------+--------------+---------------------------|
@@ -26,7 +32,7 @@ As you can see from the table below, ~xccov~ fails to count functions (classes?)
 | wholemodule                   |  100.00% |            1 | 37/37                     |
 |-------------------------------+----------+--------------+---------------------------|
 
-This is a diff produced by ~xccov diff~ command between reports produces for ~incremental~ and ~wholemodule~ :
+This is a diff produced by ~xccov diff~ command between reports produces for ~incremental~ and ~wholemodule~:
 
 #+begin_src json
   {
@@ -67,6 +73,17 @@ As I can see from the diff, ~xccov~ stopped to produce coverage in the following
 - For static and general extensions
 
 You can check the full diff between ~incremental~ and ~wholemodule~ results [[https://github.com/dive/radar-xcode-11-5-code-coverage-issue/commit/7f588b8de5e22293d699c406971f5303d8ad9887][here]].
+
+** Xcode 11.3.1
+
+Just to be sure, I ran the same script for Xcode 11.3.1. The issue does not exist in this version.
+
+|-------------------------------+----------+--------------+---------------------------|
+| SWIFT_COMPILATION_MODE option | Coverage | Source files | Functions (covered/total) |
+|-------------------------------+----------+--------------+---------------------------|
+| incremental                   |   53.19% |            3 | 75/141                    |
+| wholemodule                   |   53.19% |            3 | 75/141                    |
+|-------------------------------+----------+--------------+---------------------------|
 
 * Notes
 
