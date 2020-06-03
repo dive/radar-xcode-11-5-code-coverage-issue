@@ -9,6 +9,8 @@ function bootstrap {
     if [ ! -d "CocoaLumberjack" ]; then
         git clone https://github.com/CocoaLumberjack/CocoaLumberjack.git
     fi
+
+    printf "%s\n\n" "Xcode version: $(xcodebuild -version)"
 }
 
 function cleanUp {
