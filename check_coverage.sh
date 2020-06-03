@@ -37,12 +37,18 @@ function showCodeCoverage {
     xcrun xccov view --only-targets --report "$1"
 }
 
+function produceCoverageDiff {
+    printf "%s\n\n" "=== Diff ==="
+    xcrun xccov diff --json "$INCREMENTAL_XCRESULT" "$WHOLEMODULE_XCRESULT" | python -m json.tool
+}
+
 bootstrap
 cleanUp
 produceCodeCoverage "$INCREMENTAL_XCRESULT" "SWIFT_COMPILATION_MODE = incremental"
 produceCodeCoverage "$WHOLEMODULE_XCRESULT" "SWIFT_COMPILATION_MODE = wholemodule"
 showCodeCoverage $INCREMENTAL_XCRESULT
 showCodeCoverage $WHOLEMODULE_XCRESULT
+produceCoverageDiff
 cleanUp
 
 set -e
