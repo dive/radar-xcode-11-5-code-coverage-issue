@@ -14,7 +14,7 @@ function bootstrap {
 function cleanUp {
     rm -Rf "$INCREMENTAL_XCRESULT"
     rm -Rf "$WHOLEMODULE_XCRESULT"
-    git checkout .
+    # git checkout .
 
     pushd CocoaLumberjack
     git checkout .
@@ -44,3 +44,10 @@ produceCodeCoverage "$WHOLEMODULE_XCRESULT" "SWIFT_COMPILATION_MODE = wholemodul
 showCodeCoverage $INCREMENTAL_XCRESULT
 showCodeCoverage $WHOLEMODULE_XCRESULT
 cleanUp
+
+set -e
+
+unset bootstrap;
+unset cleanUp;
+unset produceCodeCoverage;
+unset showCodeCoverage;
