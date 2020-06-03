@@ -14,7 +14,6 @@ function bootstrap {
 function cleanUp {
     rm -Rf "$INCREMENTAL_XCRESULT"
     rm -Rf "$WHOLEMODULE_XCRESULT"
-    # git checkout .
 
     pushd CocoaLumberjack
     git checkout .
@@ -57,3 +56,4 @@ unset bootstrap;
 unset cleanUp;
 unset produceCodeCoverage;
 unset showCodeCoverage;
+unset produceCoverageDiff;
