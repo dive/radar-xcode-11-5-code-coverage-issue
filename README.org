@@ -1,0 +1,61 @@
+* Xcode 11.5 produces incorrect code-coverage for modules built with `wholemodule` optimisation
+
+Radar: TBD
+
+After switching to Xcode 11.5 we noticed that code-coverage started to produce unpredictable results to us. The investigation showed that ~xccov~ generated unreliable results when a module built with ~wholemodule~ option for ~SWIFT_COMPILATION_MODE~.
+
+This repository provides a minimal example to reproduce the issue.
+
+* How does it work
+
+There is a ~check_coverage.sh~ script that executes the following steps:
+
+1. Checkout [[https://github.com/CocoaLumberjack/CocoaLumberjack][CocoaLumberjack]] repository to use it as an example project
+2. Run tests twice with different ~SWIFT_COMPILATION_MODE~ options and produce ~xcresult~ bundles
+3. Show target coverage for both runs
+4. Show diff between runs compiled with ~incremental~ and ~wholemodule~ options
+
+* Results
+
+As you can see from the table below, ~xccov~ fails to count functions (classes?) properly when a module compiled with ~wholemodule~ optimisation. With the ~wholemodule~ option, only one file is tracked as covered with unit-tests.
+
+|-------------------------------+----------+--------------+---------------------------|
+| SWIFT_COMPILATION_MODE option | Coverage | Source files | Functions (covered/total) |
+|-------------------------------+----------+--------------+---------------------------|
+| incremental                   |   53.52% |            3 | 76/142                    |
+| wholemodule                   |  100.00% |            1 | 37/37                     |
+|-------------------------------+----------+--------------+---------------------------|
+
+This is a diff produced by ~xccov diff~ command between reports produces for ~incremental~ and ~wholemodule~ :
+
+#+begin_src json
+  {
+      "addedTargets": [],
+      "lineCoverageDelta": {
+          "coveredLinesDelta": -39,
+          "executableLinesDelta": -105,
+          "lineCoverageDelta": 0.46478873239436624
+      },
+      "removedTargets": [],
+      "targetDeltas": [
+          {
+              "addedFiles": [],
+              "fileDeltas": [],
+              "lineCoverageDelta": {
+                  "coveredLinesDelta": -39,
+                  "executableLinesDelta": -105,
+                  "lineCoverageDelta": 0.46478873239436624
+              },
+              "name": "CocoaLumberjackSwift.framework",
+              "removedFiles": [
+                  {
+                      "documentLocation": "/Users/dive/radar-xcode-11-5-code-coverage-issue/CocoaLumberjack/Sources/CocoaLumberjackSwift/CocoaLumberjack.swift"
+                  },
+                  {
+                      "documentLocation": "/Users/dive/radar-xcode-11-5-code-coverage-issue/CocoaLumberjack/Sources/CocoaLumberjackSwift/DDAssert.swift"
+                  }
+              ]
+          }
+      ]
+  }
+#+end_src
