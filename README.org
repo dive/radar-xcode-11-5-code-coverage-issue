@@ -2,13 +2,13 @@
 
 Radar: TBD
 
-After switching to Xcode 11.5 we noticed that code-coverage started to produce unpredictable results to us. The investigation showed that ~xccov~ generated unreliable results when a module built with ~wholemodule~ option for ~SWIFT_COMPILATION_MODE~. The issue is reproducible for Xcode 11.4.1 as well.
+After switching to Xcode 11.5, we noticed that code-coverage started to produce unpredictable results to us. The investigation showed that ~xccov~ generated unreliable results when a module built with ~wholemodule~ option for ~SWIFT_COMPILATION_MODE~. The issue is reproducible for Xcode 11.4.1 as well.
 
 This repository provides a minimal example to reproduce the issue.
 
 ** TL;DR
 
-So far, it looks like that the problem is caused by changes in the Swift 5.2.* Toolchain. Perhaps, the compiler changed the way how inlinable functions, extensions and other non-trivial cases are processed during the compilation pipeline but ~xccov~ was not updated accordingly.
+So far, it looks like that changes in the Swift 5.2.* Toolchain cause the problem. Perhaps, the compiler changed the way how inlinable functions, extensions and other non-trivial cases are processed during the compilation pipeline but ~xccov~ was not updated accordingly.
 
 * How does it work
 
