@@ -1,6 +1,6 @@
 * Xcode 11.5 (11.4.1) produces incorrect code-coverage for modules built with `wholemodule` optimisation
 
-Radar: TBD
+Radar: FB7723487
 
 After switching to Xcode 11.5, we noticed that code-coverage started to produce unpredictable results to us. The investigation showed that ~xccov~ generated unreliable results when a module built with ~wholemodule~ option for ~SWIFT_COMPILATION_MODE~. The issue is reproducible for Xcode 11.4.1 as well.
 
